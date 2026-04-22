@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-800 mb-1">
+      <i class="bi bi-tags me-2" style="color:var(--primary-light)"></i>Categories
+    </h2>
+    <p class="mb-0" style="color:var(--text-muted); font-size:0.9rem;">Manage your expense categories</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Add Category Form -->
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-plus-circle me-2" style="color:var(--primary-light)"></i>Add New Category
+      </div>
+      <div class="card-body">
+        <form method="POST" action="">
+          <div class="mb-3">
+            <label for="name" class="form-label">
+              <i class="bi bi-tag me-1"></i>Category Name
+            </label>
+            <input type="text" class="form-control" id="name" name="name"
+                   placeholder="e.g., Food, Transport, Rent" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-plus-lg me-1"></i>Add Category
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories List -->
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-list-ul me-2" style="color:var(--primary-light)"></i>
+        Your Categories
+        <span class="badge bg-primary ms-2">{{ categories | length }}</span>
+      </div>
+      <div class="card-body p-0">
+        {% if categories %}
+        <ul class="list-group list-group-flush">
+          {% for cat in categories %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <i class="bi bi-tag-fill me-2" style="color:var(--primary-light)"></i>
+              <span class="fw-600">{{ cat.name }}</span>
+            </div>
+            <form action="{{ url_for('category.delete_category', category_id=cat.id) }}" method="POST"
+                  onsubmit="return confirm('Delete category \'{{ cat.name }}\'? Expenses linked to it cannot be deleted.')">
+              <button type="submit" class="btn btn-sm btn-danger">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <div class="text-center" style="padding:3rem; color:var(--text-muted)">
+          <i class="bi bi-tags" style="font-size:2.5rem; display:block; margin-bottom:1rem;"></i>
+          No categories yet. Add your first one!
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

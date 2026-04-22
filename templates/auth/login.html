@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+
+{% block page_content %}
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="card">
+      <div class="card-header">
+        <div class="auth-logo">🔐</div>
+        <h3>Welcome Back</h3>
+        <p class="mb-0 mt-1" style="color:rgba(255,255,255,0.75); font-size:0.88rem;">Sign in to your account</p>
+      </div>
+      <div class="card-body">
+        <form action="{{ url_for('auth.login') }}" method="POST" class="mt-1">
+
+          <div class="mb-3">
+            <label for="email" class="form-label">
+              <i class="bi bi-envelope me-1"></i>Email Address
+            </label>
+            <input type="email" class="form-control" id="email" name="email"
+                   placeholder="you@example.com" required autofocus>
+          </div>
+
+          <div class="mb-4">
+            <label for="password" class="form-label">
+              <i class="bi bi-lock me-1"></i>Password
+            </label>
+            <input type="password" class="form-control" id="password" name="password"
+                   placeholder="Enter your password" required>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
+            </button>
+          </div>
+
+        </form>
+      </div>
+      <div class="card-footer">
+        <small>Don't have an account?
+          <a href="{{ url_for('auth.register') }}">Create one here</a>
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

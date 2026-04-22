@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+
+# Ignore local database files
+*.sqlite3
+my_database_folder/

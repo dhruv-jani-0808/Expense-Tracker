@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- Welcome Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-800 mb-1">
+      <i class="bi bi-speedometer2 me-2" style="color:var(--primary-light)"></i>
+      Dashboard
+    </h2>
+    <p class="mb-0" style="color:var(--text-muted); font-size:0.9rem;">
+      Welcome back, <strong style="color:var(--text-secondary)">{{ current_user.username }}</strong> 👋
+    </p>
+  </div>
+  <a href="{{ url_for('expense.add_expense') }}" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i>Add Expense
+  </a>
+</div>
+
+<!-- Stat Cards -->
+<div class="row mb-4 g-3">
+  <div class="col-md-6">
+    <div class="card stat-card-primary dashboard-card h-100">
+      <div class="card-body d-flex align-items-center gap-3">
+        <div style="font-size:2.5rem; opacity:0.85;">📅</div>
+        <div>
+          <div class="stat-card-title text-white">This Month</div>
+          <div class="stat-card-value text-white">₹{{ "%.2f"|format(total_month) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card stat-card-info dashboard-card h-100">
+      <div class="card-body d-flex align-items-center gap-3">
+        <div style="font-size:2.5rem; opacity:0.85;">☀️</div>
+        <div>
+          <div class="stat-card-title text-white">Today</div>
+          <div class="stat-card-value text-white">₹{{ "%.2f"|format(total_today) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart + Recent Transactions -->
+<div class="row g-3">
+  <div class="col-lg-7 mb-3">
+    <div class="card h-100">
+      <div class="card-header">
+        <i class="bi bi-pie-chart me-2" style="color:var(--primary-light)"></i>
+        Monthly Spending Breakdown
+      </div>
+      <div class="card-body d-flex align-items-center justify-content-center" style="min-height:280px;">
+        {% if chart_labels %}
+          <canvas id="categoryChart" style="max-height:300px;"></canvas>
+        {% else %}
+          <div class="text-center" style="color:var(--text-muted)">
+            <div style="font-size:3rem; margin-bottom:1rem;">📊</div>
+            <p>No spending data yet.<br>
+              <a href="{{ url_for('expense.add_expense') }}" style="color:var(--primary-light)">Add your first expense</a>
+            </p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5 mb-3">
+    <div class="card h-100">
+      <div class="card-header">
+        <i class="bi bi-clock-history me-2" style="color:var(--primary-light)"></i>
+        Recent Transactions
+      </div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          {% for expense in recent_expenses %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div>
+                <span class="fw-600">{{ expense.category.name }}</span>
+                <small class="d-block" style="color:var(--text-muted)">
+                  <i class="bi bi-calendar3 me-1"></i>{{ expense.date }}
+                </small>
+                {% if expense.description %}
+                  <small style="color:var(--text-muted); font-size:0.78rem;">{{ expense.description }}</small>
+                {% endif %}
+              </div>
+              <span class="badge bg-primary">₹{{ expense.amount }}</span>
+            </li>
+          {% else %}
+            <li class="list-group-item text-center" style="color:var(--text-muted); padding:2rem !important;">
+              <i class="bi bi-inbox" style="font-size:1.8rem; display:block; margin-bottom:0.5rem;"></i>
+              No recent expenses
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="card-footer text-center">
+        <a href="{{ url_for('expense.index') }}" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-list-ul me-1"></i>View All Expenses
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const labels = {{ chart_labels | tojson }};
+    const values = {{ chart_values | tojson }};
+    const colors = ['#6366f1','#10b981','#f59e0b','#ef4444','#38bdf8','#a78bfa','#34d399','#fb923c'];
+    if (labels.length > 0) {
+      renderCategoryPieChart(labels, values, colors);
+    }
+  });
+</script>
+{% endblock %}
